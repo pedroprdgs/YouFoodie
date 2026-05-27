@@ -12,4 +12,20 @@ def connect_db():
         database=os.getenv('MYSQL_DATABASE', 'youfoodie')
     )
 
-conn = connect_db()
+def fetch_all(query, params=None):
+    conn = connect_db()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute(query, params)
+            return cursor.fetchall()
+    finally:
+        conn.close()
+
+def execute_query(query, params=None):
+    conn = connect_db()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute(query, params)
+            conn.commit()
+    finally:
+        conn.close()
