@@ -17,6 +17,10 @@ create table restaurante(
 	id int auto_increment primary key,
     id_endereco int not null,
     nome varchar(45) not null,
+    imagem varchar(255),
+    preco_entrega decimal(4,2) default 0,
+    avaliacao float check (0 <= avaliacao <= 5),
+    tempo_medio_entrega_min int,
     foreign key(id_endereco) references endereco_restaurante(id)
 );
 
