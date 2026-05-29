@@ -9,7 +9,7 @@ create table endereco_restaurante(
     estado varchar(45) not null,
     cidade varchar(60) not null,
     rua varchar(60) not null,
-    numero int not null,
+    numero int(5) not null,
     complemento varchar(100)
 );
 
@@ -42,7 +42,7 @@ create table endereco_usuario(
     estado varchar(45) not null,
     cidade varchar(60) not null,
     rua varchar(60) not null,
-    numero int not null,
+    numero int(5) not null,
     complemento varchar(100)
 );
 
