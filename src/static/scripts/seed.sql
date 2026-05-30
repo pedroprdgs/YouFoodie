@@ -4,9 +4,9 @@ insert into endereco_restaurante(pais, cep, estado, cidade, rua, numero, complem
 ('Brasil', '12245-000', 'São Paulo', 'São José dos Campos', 'Av. Andrômeda', 1200, 'Loja 12'),
 ('Brasil', '12246-767', 'São Paulo', 'São José dos Campos', 'Rua dos Chads', 67, null);
 
-insert into restaurante(id_endereco, nome, imagem, preco_entrega, avaliacao, tempo_medio_entrega_min) values
-(1, 'Chud Burger', 'chudburger.png', 10, 2.4, null),
-(2, 'Mogador Burguer', 'mogadorburguer.png', 0, 5, 15);
+insert into restaurante(id_endereco, nome, categoria, imagem, preco_entrega, avaliacao, tempo_medio_entrega_min) values
+(1, 'Chud Burger', 'Hamburgi', 'chudburger.png', 10, 2.4, null),
+(2, 'Mogador Burguer', 'Hambúrgueres e Lanches', 'mogadorburguer.png', 0, 5, 15);
 
 insert into prato(id_restaurante, nome, descricao, categoria, imagem, preco) values
 (1, 'Chud-Burger', 'Hambúrguer artesanal com queijo e molho especial', 'Lanches', 'xburger.png', 12.67),

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Página Inicial{% endblock %}
+{% block title %}YouFoodie - Página Inicial{% endblock %}
 
 {% block content %}
     <section class="hero">
@@ -33,108 +33,56 @@
     </section>
     <section class="container py-5">
         <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4 gap-2">
-            <h2 class="fw-bold text-muted">Categorias</h2>
-            <a href="#" class="text-warning text-decoration-none">Ver todas</a>
+            <h2 class="fw-bold text-muted">Pratos</h2>
+            <a href="#" class="text-warning text-decoration-none">Ver todos</a>
         </div>
         <div class="d-flex gap-3 category-scroll pb-2">
-            <div class="card category-card bg-white border-0 shadow-sm p-3">
-                <div class="d-flex align-items-center gap-3 w-100">
-                    <div class="category-icon">
-                        <img src="https://placehold.co/100x100">
-                    </div>
-                    <div>
-                        <h5 class="fw-bold mb-1">Hambúrguer</h5>
-                        <p class="text-muted small mb-0">24 restaurantes</p>
-                    </div>
-                </div>
-            </div>
-            <div class="card category-card bg-white border-0 shadow-sm p-3">
-                <div class="d-flex align-items-center gap-3 w-100">
-                    <div class="category-icon">
-                        <img src="https://placehold.co/100x100">
-                    </div>
-                    <div>
-                        <h5 class="fw-bold mb-1">Hambúrguer</h5>
-                        <p class="text-muted small mb-0">24 restaurantes</p>
+            {% for prato in pratos[:5] %}
+            <div class="card dish-card border-0 shadow-sm">
+                <img src="{{ url_for('static', filename='assets/'+prato['imagem']) }}" class="card-img-top">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-1">{{ prato['nome'] }}</h6>
+                    <p class="text-muted small mb-2">{{ get_restaurante_by_prato(prato['id'])['nome'] }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-bold text-success">R${{ prato['preco'] }}</span>
+                        <button class="btn btn-foodie btn-sm">
+                            <i class="bi bi-plus"></i>
+                        </button>
                     </div>
                 </div>
             </div>
-            <div class="card category-card bg-white border-0 shadow-sm p-3">
-                <div class="d-flex align-items-center gap-3 w-100">
-                    <div class="category-icon">
-                        <img src="https://placehold.co/100x100">
-                    </div>
-                    <div>
-                        <h5 class="fw-bold mb-1">Hambúrguer</h5>
-                        <p class="text-muted small mb-0">24 restaurantes</p>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </section>
     <section class="container py-5">
         <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4 gap-2">
             <h2 class="fw-bold text-muted">Restaurantes em destaque</h2>
-            <a href="" class="text-warning text-decoration-none">Ver mais</a>
+            <a href="#" class="text-warning text-decoration-none">Ver mais</a>
         </div>
         <div class="row g-4">
+            {% for restaurante in restaurantes[:6] %}
             <div class="col-12 col-md-6 col-xl-4">
                 <div class="card restaurant-card bg-white border-0 shadow-sm" style="border-radius: 25px; overflow: hidden">
                     <div class="position-relative">
-                        <img src="https://placehold.co/600x300" class="card-img-top" style="height: 220px; object-fit: cover">
+                        <img src="{{ url_for('static', filename='assets/'+restaurante['imagem']) }}" class="card-img-top" style="height: 220px; object-fit: cover">
+                        {% if restaurante['avaliacao'] >= 4.5 %}
                         <span class="badge bg-warning text-dark position-absolute top-0 start-0 m-3">Destaque</span>
+                        {% endif %}
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h5 class="card-title mb-0">Burger House</h5>
-                            <span class="text-warning fw-bold"><i class="bi bi-star-fill"></i>4.8</span>
+                            <h5 class="card-title mb-0">{{ restaurante['nome'] }}</h5>
+                            <span class="text-warning fw-bold"><i class="bi bi-star-fill"></i> {{ restaurante['avaliacao'] }}</span>
                         </div>
-                        <p class="text-secondary small mb-4">Hambúrguer • Americana • Lanches</p>
+                        <p class="text-secondary small mb-4">{{ restaurante['categoria'] }}</p>
                         <div class="d-flex justify-content-between">
-                            <span class="small"><i class="bi bi-clock"></i> 25-35 min</span>
+                            <span class="small"><i class="bi bi-clock"></i> {{ restaurante['tempo_medio_entrega_min'] }} min</span>
                             <span class="text-success fw-bold small">Entrega grátis</span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-xl-4">
-                <div class="card restaurant-card bg-white border-0 shadow-sm" style="border-radius: 25px; overflow: hidden">
-                    <div class="position-relative">
-                        <img src="https://placehold.co/600x300" class="card-img-top" style="height: 220px; object-fit: cover">
-                        <span class="badge bg-warning text-dark position-absolute top-0 start-0 m-3">Destaque</span>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h5 class="card-title mb-0">Burger House</h5>
-                            <span class="text-warning fw-bold"><i class="bi bi-star-fill"></i> 4.8</span>
-                        </div>
-                        <p class="text-secondary small mb-4">Hambúrguer • Americana • Lanches</p>
-                        <div class="d-flex justify-content-between">
-                            <span class="small"><i class="bi bi-clock"></i> 25-35 min</span>
-                            <span class="text-success fw-bold small">Entrega grátis</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-xl-4">
-                <div class="card restaurant-card bg-white border-0 shadow-sm" style="border-radius: 25px; overflow: hidden">
-                    <div class="position-relative">
-                        <img src="https://placehold.co/600x300" class="card-img-top" style="height: 220px; object-fit: cover">
-                        <span class="badge bg-warning text-dark position-absolute top-0 start-0 m-3">Destaque</span>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h5 class="card-title mb-0">Burger House</h5>
-                            <span class="text-warning fw-bold"><i class="bi bi-star-fill"></i> 4.8</span>
-                        </div>
-                        <p class="text-secondary small mb-4">Hambúrguer • Americana • Lanches</p>
-                        <div class="d-flex justify-content-between">
-                            <span class="small"><i class="bi bi-clock"></i> 25-35 min</span>
-                            <span class="text-success fw-bold small">Entrega grátis</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </section>
 {% endblock %}

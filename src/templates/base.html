@@ -18,9 +18,9 @@
             <div class="container d-flex justify-content-between align-items-center">
                 <a href="/" class="navbar-brand">
                     <img src="{{ url_for('static', filename='assets/logo.png') }}" width="180" alt="Logo">
-                </a><div class="d-flex align-items center gap-3">
+                </a><div class="d-flex align-items-center gap-3">
                     <a href="#" class="btn btn-foodie"><i class="bi bi-basket2-fill fs-3"></i></a>
-                    <a href="#" class="btn btn-foodie"><i class="bi bi-person-fill fs-3"></i></a>
+                    <a href="{{ '/perfil' if session.get('usuario_id') else '/login' }}" class="btn btn-foodie"><i class="bi bi-person-fill fs-3"></i></a>
                 </div>
             </div>
         </nav>
@@ -33,13 +33,13 @@
                     &copy 2026 YouFoodie
                 </p>
                 <div class="d-flex gap-3">
-                    <a href="" class="text-dark">
+                    <a href="https://www.instagram.com/pedroprdgs/" target="_blank" class="text-dark">
                         <i class="bi bi-instagram fs-5"></i>
                     </a>
-                    <a href="" class="text-dark">
-                        <i class="bi bi-twitter-x fs-5"></i>
+                    <a href="https://www.linkedin.com/in/pedro-rodrigues-aa7001274/" target="_blank" class="text-dark">
+                        <i class="bi bi-linkedin fs-5"></i>
                     </a>
-                    <a href="" class="text-dark">
+                    <a href="https://www.github.com/pedroprdgs" target="_blank" class="text-dark">
                         <i class="bi bi-github fs-5"></i>
                     </a>
                 </div>

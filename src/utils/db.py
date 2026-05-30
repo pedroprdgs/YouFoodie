@@ -9,10 +9,11 @@ def connect_db():
         host=os.getenv('MYSQL_HOST', 'localhost'),
         user=os.getenv('MYSQL_USER', 'root'),
         password=os.getenv('MYSQL_PASSWORD', ''),
-        database=os.getenv('MYSQL_DATABASE', 'youfoodie')
+        database=os.getenv('MYSQL_DATABASE', 'youfoodie'),
+        cursorclass=pymysql.cursors.DictCursor
     )
 
-def fetch_all(query, params=None):
+def fetch_data(query, params=None):
     conn = connect_db()
     try:
         with conn.cursor() as cursor:
