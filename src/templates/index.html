@@ -17,10 +17,10 @@
                         Descubra restaurantes incríveis perto de você.
                     </p>
                     <div class="hero-buttons d-flex flex-column flex-sm-row gap-3">
-                        <a href="#" class="btn btn-foodie-large">
+                        <a href="#pratos" class="btn btn-foodie-large">
                             Pedir agora
                         </a>
-                        <a href="#" class="btn btn-outline-foodie rounded-pill px-4">
+                        <a href="#restaurantes" class="btn btn-outline-foodie rounded-pill px-4">
                             Ver restaurantes
                         </a>
                     </div>
@@ -31,22 +31,22 @@
             </div>
         </div>
     </section>
-    <section class="container py-5">
+    <section id="pratos" class="container py-5">
         <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4 gap-2">
             <h2 class="fw-bold text-muted">Pratos</h2>
-            <a href="#" class="text-warning text-decoration-none">Ver todos</a>
+            <a href="/pratos" class="text-warning text-decoration-none">Ver todos</a>
         </div>
         <div class="d-flex gap-3 category-scroll pb-2">
-            {% for prato in pratos[:5] %}
+            {% for prato in pratos[:6] %}
             <div class="card dish-card border-0 shadow-sm">
                 <img src="{{ url_for('static', filename='assets/'+prato['imagem']) }}" class="card-img-top">
                 <div class="card-body">
                     <h6 class="fw-bold mb-1">{{ prato['nome'] }}</h6>
-                    <p class="text-muted small mb-2">{{ get_restaurante_by_prato(prato['id'])['nome'] }}</p>
+                    <a href="/restaurante?id={{ prato['id_restaurante'] }}" style="text-decoration: none;"><p class="text-muted small mb-2">{{ get_restaurante_by_prato(prato['id'])['nome'] }}</p></a>
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="fw-bold text-success">R${{ prato['preco'] }}</span>
-                        <button class="btn btn-foodie btn-sm">
-                            <i class="bi bi-plus"></i>
+                        <button class="btn btn-foodie btn-sm add-cart" data-prato="{{ prato['id'] }}">
+                            <i class="bi bi-plus fs-3"></i>
                         </button>
                     </div>
                 </div>
@@ -54,17 +54,17 @@
             {% endfor %}
         </div>
     </section>
-    <section class="container py-5">
+    <section id="restaurantes" class="container py-5">
         <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4 gap-2">
             <h2 class="fw-bold text-muted">Restaurantes em destaque</h2>
-            <a href="#" class="text-warning text-decoration-none">Ver mais</a>
+            <a href="/restaurantes" class="text-warning text-decoration-none">Ver mais</a>
         </div>
         <div class="row g-4">
             {% for restaurante in restaurantes[:6] %}
-            <div class="col-12 col-md-6 col-xl-4">
-                <div class="card restaurant-card bg-white border-0 shadow-sm" style="border-radius: 25px; overflow: hidden">
+            <a href="/restaurante?id={{ restaurante['id'] }}" class="col-12 col-md-6 col-xl-4" style="text-decoration: none;">
+                <div class="card restaurant-card bg-white border-0 shadow-sm">
                     <div class="position-relative">
-                        <img src="{{ url_for('static', filename='assets/'+restaurante['imagem']) }}" class="card-img-top" style="height: 220px; object-fit: cover">
+                        <img src="{{ url_for('static', filename='assets/'+restaurante['imagem']) }}" class="card-img-top">
                         {% if restaurante['avaliacao'] >= 4.5 %}
                         <span class="badge bg-warning text-dark position-absolute top-0 start-0 m-3">Destaque</span>
                         {% endif %}
@@ -77,11 +77,15 @@
                         <p class="text-secondary small mb-4">{{ restaurante['categoria'] }}</p>
                         <div class="d-flex justify-content-between">
                             <span class="small"><i class="bi bi-clock"></i> {{ restaurante['tempo_medio_entrega_min'] }} min</span>
-                            <span class="text-success fw-bold small">Entrega grátis</span>
+                            {% if restaurante['preco_entrega'] and restaurante['preco_entrega'] > 0 %}
+                                <span class="small">Entrega: <span class="fw-bold text-success">R${{ restaurante['preco_entrega'] }}</span></span>
+                            {% else %}
+                                <span class="text-success fw-bold small">Entrega grátis</span>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
             {% endfor %}
         </div>
     </section>

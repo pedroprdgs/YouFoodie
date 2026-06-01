@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}YouFoodie - Restaurantes{% endblock %}
+
+{% block content %}
+    <div class="container py-5">
+        <div class="mb-5">
+            <h1 class="fw-bold mb-2">Restaurantes</h1>
+            <p class="text-muted mb-4">Encontre o restaurante perfeto para sua próxima refeição.</p>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold text-muted mb-0">Todos restaurantes</h2>
+            <span class="text-secondary">{{ restaurantes|length }} restaurantes</span>
+        </div>
+        <div class="row g-4">
+            {% for restaurante in restaurantes %}
+                <div class="col-12 col-md-6 col-xl-4">
+                    <a href="/restaurante?id={{ restaurante['id'] }}" class="restaurant-link">
+                        <div class="card restaurant-card border-0 shadow-sm">
+                            <div class="restaurant-image-container">
+                                <img src="{{ url_for('static', filename='assets/'+restaurante['imagem']) }}" alt="{{ restaurante['nome'] }}" class="card-img-top restaurant-image">
+                                {% if restaurante['avaliacao'] >= 4.5 %}
+                                    <span class="badge bg-warning text-dark restaurant-badge">Destaque</span>
+                                {% endif %}
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <h5 class="fw-bold mb-1">{{ restaurante['nome'] }}</h5>
+                                        <p class="text-secondary small mb-0">{{ restaurante['categoria'] }}</p>
+                                    </div>
+                                    <span class="text-warning fw-bold">
+                                        <i class="bi bi-star-fill"></i> {{ restaurante['avaliacao'] }}
+                                    </span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between align-items center">
+                                    <span class="small text-muted">
+                                        <i class="bi bi-clock"></i> {{ restaurante['tempo_medio_entrega_min'] }} min
+                                    </span>
+                                    {% if restaurante['preco_entrega'] and restaurante['preco_entrega'] > 0 %}
+                                        <span class="small">
+                                            Entrega:
+                                            <span class="fw-bold text-success">
+                                                R${{ restaurante['preco_entrega'] }}
+                                            </span>
+                                        </span>
+                                    {% else %}
+                                        <span class="small fw-bold text-success">Entrega grátis</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

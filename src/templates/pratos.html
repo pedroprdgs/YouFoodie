@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}YouFoodie - Pratos{% endblock %}
+
+{% block content %}
+    <div class="container py-5">
+        <div class="mb-5">
+            <h1 class="fw-bold mb-2">Pratos</h1>
+            <p class="text-muted mb-4">Encontre sua próxima refeição favorita.</p>
+            <div class="input-group">
+                <span class="input-group-text bg-white">
+                    <i class="bi bi-search"></i>
+                </span>
+                <input type="text" name="nome" id="search-pratos" class="form-control" placeholder="Buscar pratos...">
+            </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold text-muted mb-0">Todos os pratos</h2>
+            <span class="text-secondary">{{ pratos|length }} pratos</span>
+        </div>
+        <div class="d-flex gap-2 category-scroll mb-4">
+            <button class="btn btn-foodie-large category-filter" data-category="Todos">Todos</button>
+            {% for categoria in categorias %}
+                <button class="btn btn-outline-foodie category-filter" data-category="{{ categoria['categoria'] }}">
+                    {{ categoria['categoria'] }}
+                </button>
+            {% endfor %}
+        </div>
+        <div class="row g-4">
+            {% for prato in pratos %}
+                <div class="col-12 col-md-6 col-xl-4 prato-item" data-category="{{ prato['categoria'] }}" data-name="{{ prato['nome']|lower }}">
+                    <div class="card restaurant-card border-0 shadow-sm">
+                        <div class="position-relative">
+                            <img src="{{ url_for('static', filename='assets/'+prato['imagem']) }}" alt="{{ prato['nome'] }}" class="card-img-top restaurant-image">
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h5 class="fw-bold mb-1">{{ prato['nome'] }}</h5>
+                                    <p class="text-secondary small mb-0">
+                                        {{ prato['categoria'] }}
+                                    </p>
+                                </div>
+                                <span class="fw-bold text-success">R${{ prato['preco'] }}</span>
+                            </div>
+                            <p class="text-muted small mb-3">{{ prato['descricao'] }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">{{ get_restaurante_by_prato(prato['id'])['nome'] }}</small>
+                                <button class="btn btn-foodie btn-sm add-cart" data-prato="{{ prato['id'] }}">
+                                    <i class="bi bi-plus fs-3"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

@@ -13,7 +13,7 @@ def get_restaurante_endereco(id_restaurante):
     return endereco[0]
 
 def get_restaurante_by_id(id_restaurante):
-    query = "SELECT * FROM restaurante WHERE restaurante_id = %s"
+    query = "SELECT * FROM restaurante WHERE id = %s"
 
     restaurante = fetch_data(query, (id_restaurante,))
     return restaurante[0]
@@ -27,6 +27,12 @@ def get_restaurante_by_prato(id_prato):
     restaurante = fetch_data(query, (id_prato,))
     return restaurante[0]
 
+def get_restaurante_pratos(id_restaurante):
+    query = "SELECT * FROM prato WHERE id_restaurante = %s"
+
+    pratos = fetch_data(query, (id_restaurante,))
+    return pratos
+
 def get_pratos():
     query = "SELECT * FROM prato"
 
@@ -34,10 +40,16 @@ def get_pratos():
     return pratos
 
 def get_prato_by_id(id_prato):
-    query = "SELECT * FROM prato WHERE prato_id = %s"
+    query = "SELECT * FROM prato WHERE id = %s"
 
     prato = fetch_data(query, (id_prato,))
     return prato[0]
+
+def get_categorias():
+    query = "SELECT categoria FROM prato GROUP BY categoria"
+
+    pratos = fetch_data(query)
+    return pratos
 
 def get_usuarios():
     query = "SELECT * FROM usuario"
@@ -61,7 +73,20 @@ def auth_user(email, senha):
     query = "SELECT * FROM usuario WHERE email = %s AND senha = %s"
 
     usuario = fetch_data(query, (email, senha))
-    return usuario[0]
+    return usuario[0] if usuario else None
+
+def create_usuario(email, senha, cpf, primeiro_nome, ultimo_nome=None, **endereco):
+    query = """
+        INSERT INTO endereco_usuario(pais, cep, estado, cidade, rua, numero) VALUES
+        (%s, %s, %s, %s, %s, %s)
+    """
+    id_endereco = execute_query(query, (endereco['pais'], endereco['cep'], endereco['estado'], endereco['cidade'], endereco['rua'], endereco['numero']), return_lastrowid=True)
+
+    query = """
+        INSERT INTO usuario(id_endereco, email, senha, cpf, primeiro_nome, ultimo_nome) VALUES
+        (%s, %s, %s, %s, %s, %s)
+    """
+    execute_query(query, (id_endereco, email, senha, cpf, primeiro_nome, ultimo_nome))
 
 def get_pedidos_usuario(id_usuario):
     query = """

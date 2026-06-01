@@ -9,7 +9,7 @@ create table endereco_restaurante(
     estado varchar(45) not null,
     cidade varchar(60) not null,
     rua varchar(60) not null,
-    numero int(5) not null,
+    numero int not null,
     complemento varchar(100)
 );
 
@@ -17,6 +17,7 @@ create table restaurante(
 	id int auto_increment primary key,
     id_endereco int not null,
     nome varchar(45) not null,
+    categoria varchar(30),
     imagem varchar(255),
     preco_entrega decimal(4,2) default 0,
     avaliacao float check (0 <= avaliacao <= 5),
@@ -42,7 +43,7 @@ create table endereco_usuario(
     estado varchar(45) not null,
     cidade varchar(60) not null,
     rua varchar(60) not null,
-    numero int(5) not null,
+    numero int not null,
     complemento varchar(100)
 );
 
@@ -53,7 +54,7 @@ create table usuario(
     senha varchar(255) not null,
     cpf char(11) not null unique,
     primeiro_nome varchar(30) not null,
-    ultimo_nome varchar(45) not null,
+    ultimo_nome varchar(45),
     foreign key(id_endereco) references endereco_usuario(id)
 );
 
