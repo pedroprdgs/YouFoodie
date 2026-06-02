@@ -1,19 +1,19 @@
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.add-cart').forEach(btn => {
+    document.querySelectorAll('.remove-cart').forEach(btn => {
         btn.addEventListener('click', async() => {
             const pratoId = btn.dataset.prato;
 
             try{
-                const response = await fetch('/carrinho/adicionar', {
+                const response = await fetch('/carrinho/remover', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id_prato: pratoId })
                 });
-                const adicionado = await response.json();
-                showToast(adicionado.message, adicionado.success ? 'success' : 'warning');
+                const removido = await response.json();
+                showToast(removido.message, removido.success ? 'success' : 'warning');
             } catch (error) {
-                console.error('Erro ao adicionar produto:', error);
-                showToast('Erro ao adicionar produto.', 'danger');
+                console.error('Erro ao remover produto:', error);
+                showToast('Erro ao remover produto.', 'danger');
             }
         });
     });

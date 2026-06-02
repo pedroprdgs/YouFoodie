@@ -51,12 +51,6 @@ def get_categorias():
     pratos = fetch_data(query)
     return pratos
 
-def get_usuarios():
-    query = "SELECT * FROM usuario"
-
-    usuarios = fetch_data(query)
-    return usuarios
-
 def get_usuario_endereco(id_usuario):
     query = "SELECT * FROM endereco_usuario WHERE id = %s"
     
@@ -88,27 +82,38 @@ def create_usuario(email, senha, cpf, primeiro_nome, ultimo_nome=None, **enderec
     """
     execute_query(query, (id_endereco, email, senha, cpf, primeiro_nome, ultimo_nome))
 
-def create_pedido(id_usuario, **itens):
+def create_pedido(id_usuario, id_restaurante, itens):
+    preco_total = 0
+
+    itens_pedido = []
+
+    for item in itens:
+        prato = get_prato_by_id(item['id_prato'])
+        preco_unitario = float(prato['preco'])
+        preco_total += preco_unitario * item['quantidade']
+        itens_pedido.append((item['id_prato'], preco_unitario, item['quantidade']))
+    
     query = """
-        INSERT INTO pedido(id_usuario, preco_total) VALUES
-        (%s, %s)
+        INSERT INTO pedido(id_usuario, id_restaurante, preco_total) VALUES
+        (%s, %s, %s)
     """
 
-    # id_pedido = execute_query(query, (id_usuario, sum(item['preco_unitario'] for item in itens)))
+    id_pedido = execute_query(query, (id_usuario, id_restaurante, preco_total), return_lastrowid=True)
 
     query = """
         INSERT INTO item_pedido(id_prato, id_pedido, preco_unitario, quantidade) VALUES
         (%s, %s, %s, %s)
     """
 
+    for id_prato, preco_unitario, quantidade in itens_pedido:
+        execute_query(query, (id_prato, id_pedido, preco_unitario, quantidade))
+
 def get_pedidos_usuario(id_usuario):
     query = """
-        SELECT p.id, p.data_hora_pedido, p.preco_total, pr.nome AS prato_nome, r.nome AS restaurante_nome FROM pedido p
-        INNER JOIN item_pedido ip on p.id = ip.id_pedido
-        INNER JOIN prato pr ON p.id = pr.id
-        INNER JOIN restaurante r ON pr.id_restaurante = r.id
+        SELECT p.id, p.data_hora_pedido, p.preco_total, r.nome AS restaurante_nome FROM pedido p
+        INNER JOIN restaurante r ON p.id_restaurante = r.id
         WHERE p.id_usuario = %s
-        GROUP BY p.id
+        ORDER BY p.data_hora_pedido DESC
     """
 
     pedidos = fetch_data(query, (id_usuario,))

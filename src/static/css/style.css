@@ -48,6 +48,7 @@ body{
     max-width: 100%;
     width: 500px;
     height: auto;
+    border-radius: var(--radius-md);
 }
 
 .hero h1{
@@ -326,6 +327,27 @@ body{
 .quantity-controls{
     display: flex;
     align-items: center;
+}
+
+.clear-cart-btn{
+    width: 50%;
+    border: 1px solid #dc3545;
+    background: transparent;
+    color: #dc3545;
+    padding: 0.9rem;
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.clear-cart-btn:hover{
+    background: #dc3545;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.clear-cart-btn:active{
+    transform: translateY(0);
 }
 
 footer a{

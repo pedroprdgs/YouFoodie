@@ -30,6 +30,7 @@ def carrinho():
     itens = session.get('carrinho', [])
     pratos = []
     total = 0
+    entrega = get_restaurante_by_id(itens[0]['id_restaurante'])['preco_entrega'] if itens else None
 
     for item in itens:
         prato = get_prato_by_id(item['id_prato']) if item['id_prato'] else None
@@ -40,31 +41,76 @@ def carrinho():
         pratos.append({"prato": prato, "quantidade": item['quantidade'], "subtotal": subtotal})
         total += subtotal
 
-    return render_template('carrinho.html', pratos=pratos, total=total)
+    return render_template('carrinho.html', pratos=pratos, total=total, entrega=entrega)
 
 @app.route('/carrinho/adicionar', methods=['POST'])
 def adicionar_carrinho():
-    id_prato = request.json.get('id_prato')
-    
+    id_prato = int(request.json.get('id_prato'))
+    prato = get_prato_by_id(id_prato)
+    if not prato:
+        return {"success": False}, 404
+
+    id_restaurante = prato['id_restaurante']
     carrinho = session.get('carrinho', [])
-    for item in carrinho:
+
+    if carrinho and carrinho[0]['id_restaurante'] != id_restaurante:
+        return{
+            "success": False,
+            "message": "Produtos no carrinho devem ser do mesmo restaurante."
+        }
+
+    for item in carrinho:        
         if item['id_prato'] == id_prato:
             item['quantidade'] += 1
             break
     else:
         carrinho.append({
             "id_prato": id_prato,
+            "id_restaurante": id_restaurante,
             "quantidade": 1
         })
     session['carrinho'] = carrinho
-    return {"success": True}
+    return {
+        "success": True,
+        "message": "Produto adicionado ao carrinho."
+    }
+
+@app.route('/carrinho/remover', methods=['POST'])
+def remover_carrinho():
+    id_prato = int(request.json.get('id_prato'))
+    prato = get_prato_by_id(id_prato)
+    if not prato:
+        return {"success": False}, 404
+
+    carrinho = session.get('carrinho', [])
+
+    for item in carrinho:        
+        if item['id_prato'] == id_prato:
+            item['quantidade'] -= 1
+            if item['quantidade'] <= 0:
+                carrinho.remove(item)
+            break
+    session['carrinho'] = carrinho
+    return {
+        "success": True,
+        "message": "Produto removido do carrinho."
+    }
+
+@app.route('/carrinho/limpar', methods=['POST'])
+def limpar_carrinho():
+    if request.method == 'POST':
+        session['carrinho'] = []
+    return redirect('/carrinho')
 
 @app.route('/carrinho/finalizar', methods=['POST'])
 def finalizar_pedido():
     if request.method == 'POST':
         carrinho = session.get('carrinho', [])
-        create_pedido(session.get('usuario_id'), **carrinho)
-    return {"success": True}
+        restaurante_id  = get_prato_by_id(carrinho[0]['id_prato'])['id_restaurante']
+        create_pedido(session.get('usuario_id'), restaurante_id, carrinho)
+
+        session['carrinho'] = []
+    return redirect('/carrinho')
 
 @app.context_processor
 def inject_carrinho_count():
@@ -86,7 +132,7 @@ def login():
             session['usuario_email'] = usuario['email']
             print(session)
             
-            return redirect(url_for('index'))
+            return redirect('/')
         else:
             flash("Email ou senha inválidos.", "danger")
     return render_template('login.html')
@@ -119,16 +165,17 @@ def cadastro():
 @app.route('/perfil')
 def perfil():
     if 'usuario_id' not in session:
-        return redirect(url_for('login'))
+        return redirect('/login')
     usuario = get_usuario_by_id(session['usuario_id'])
     endereco = get_usuario_endereco(session['usuario_id'])
+    pedidos = get_pedidos_usuario(session['usuario_id'])
 
-    return render_template('perfil.html', usuario=usuario, endereco=endereco)
+    return render_template('perfil.html', usuario=usuario, endereco=endereco, pedidos=pedidos)
 
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('index'))
+    return redirect('/')
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0")
