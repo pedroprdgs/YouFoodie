@@ -23,7 +23,12 @@
                 <a href="/" class="navbar-brand">
                     <img src="{{ url_for('static', filename='assets/logo.png') }}" width="180" alt="Logo">
                 </a><div class="d-flex align-items-center gap-3">
-                    <a href="{{ '/carrinho' if session.get('usuario_id') else '/login' }}" class="btn btn-foodie"><i class="bi bi-basket2-fill fs-3"></i></a>
+                    <a href="{{ '/carrinho' if session.get('usuario_id') else '/login' }}" class="btn btn-foodie position-relative">
+                        <i class="bi bi-basket2-fill fs-3"></i>
+                        {% if qtd_carrinho > 0 %}
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{{ qtd_carrinho }}</span>
+                        {% endif %}
+                    </a>
                     <a href="{{ '/perfil' if session.get('usuario_id') else '/login' }}" class="btn btn-foodie"><i class="bi bi-person-fill fs-3"></i></a>
                 </div>
             </div>

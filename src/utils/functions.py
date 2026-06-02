@@ -88,6 +88,19 @@ def create_usuario(email, senha, cpf, primeiro_nome, ultimo_nome=None, **enderec
     """
     execute_query(query, (id_endereco, email, senha, cpf, primeiro_nome, ultimo_nome))
 
+def create_pedido(id_usuario, **itens):
+    query = """
+        INSERT INTO pedido(id_usuario, preco_total) VALUES
+        (%s, %s)
+    """
+
+    # id_pedido = execute_query(query, (id_usuario, sum(item['preco_unitario'] for item in itens)))
+
+    query = """
+        INSERT INTO item_pedido(id_prato, id_pedido, preco_unitario, quantidade) VALUES
+        (%s, %s, %s, %s)
+    """
+
 def get_pedidos_usuario(id_usuario):
     query = """
         SELECT p.id, p.data_hora_pedido, p.preco_total, pr.nome AS prato_nome, r.nome AS restaurante_nome FROM pedido p

@@ -59,6 +59,20 @@ def adicionar_carrinho():
     session['carrinho'] = carrinho
     return {"success": True}
 
+@app.route('/carrinho/finalizar', methods=['POST'])
+def finalizar_pedido():
+    if request.method == 'POST':
+        carrinho = session.get('carrinho', [])
+        create_pedido(session.get('usuario_id'), **carrinho)
+    return {"success": True}
+
+@app.context_processor
+def inject_carrinho_count():
+    carrinho = session.get('carrinho', [])
+    quantidade = sum(item['quantidade'] for item in carrinho)
+    
+    return{'qtd_carrinho': quantidade}
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
