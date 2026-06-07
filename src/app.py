@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, get_flashed_messages
 from utils.functions import *
+import os
 
 app = Flask(__name__)
-app.secret_key = "seila"
+app.secret_key = os.getenv('SECRET_KEY', 'default')
 
 @app.route('/')
 def index():
@@ -49,6 +50,12 @@ def adicionar_carrinho():
     prato = get_prato_by_id(id_prato)
     if not prato:
         return {"success": False}, 404
+    
+    if not session.get('usuario_id'):
+        return {
+            "success": False,
+            "message": "Usuário deve estar logado para adicionar produtos ao carrinho."
+        }, 401
 
     id_restaurante = prato['id_restaurante']
     carrinho = session.get('carrinho', [])
@@ -57,7 +64,7 @@ def adicionar_carrinho():
         return{
             "success": False,
             "message": "Produtos no carrinho devem ser do mesmo restaurante."
-        }
+        }, 400
 
     for item in carrinho:        
         if item['id_prato'] == id_prato:
@@ -109,6 +116,7 @@ def finalizar_pedido():
         restaurante_id  = get_prato_by_id(carrinho[0]['id_prato'])['id_restaurante']
         create_pedido(session.get('usuario_id'), restaurante_id, carrinho)
 
+        flash('Pedido finalizado com sucesso!', 'success')
         session['carrinho'] = []
     return redirect('/carrinho')
 
@@ -175,6 +183,7 @@ def perfil():
 @app.route('/logout')
 def logout():
     session.clear()
+    flash('Saída realizada com sucesso!', 'success')
     return redirect('/')
 
 if __name__ == '__main__':
